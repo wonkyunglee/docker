@@ -1,4 +1,4 @@
-From tensorflow/tensorflow:1.8.0-gpu-py3
+FROM tensorflow/tensorflow:1.8.0-gpu-py3
 MAINTAINER Wonkyung Lee <leewk92@estsoft.com>
 
 ENV LC_ALL C.UTF-8
