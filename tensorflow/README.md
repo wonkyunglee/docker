@@ -8,4 +8,5 @@ This docker image is built automatically and the source github repository is htt
 Pull requests are always welcome.
 
 # Verison
-Current version of TF is 1.8.0-gpu-py3
+git tag is same as the base docker image of tensorflow version. 
+The tf-version of current mater branch is 1.8.0-gpu-py3.
