@@ -1,14 +1,27 @@
 FROM tensorflow/tensorflow:1.8.0-gpu-py3
 MAINTAINER Wonkyung Lee <leewk92@estsoft.com>
 
-ENV LC_ALL C.UTF-8
-
 RUN apt-get update
 RUN apt-get install -y \
     git\
     vim \
     zsh \
-    tmux
+    tmux 
+    
+# Install language pack
+RUN apt-get install -y \
+    language-pack-en
+RUN locale-gen en_US.utf8
+RUN update-locale
+RUN export LC_ALL=en_US.UTF-8
+
 RUN curl -fsSL https://dotfiles.wook.kr/etc/install | bash
+
+# Install python packages for image processing.
+RUN pip3 install scikit-image
+RUN pip3 install opencv-python
+RUN apt install -y libsm6 libxext6 libxrender-dev
+RUN pip3 install cmake
+RUN pip3 install dlib
 
 CMD ["zsh"]
