@@ -1,5 +1,5 @@
-FROM tensorflow/tensorflow:1.8.0-gpu-py3
-MAINTAINER Wonkyung Lee <leewk92@estsoft.com>
+FROM tensorflow/tensorflow:1.10.1-gpu-py3
+MAINTAINER Wonkyung Lee <leewk921223@gmail.com>
 
 RUN apt-get update
 RUN apt-get install -y \
