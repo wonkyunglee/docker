@@ -1,0 +1,75 @@
+version: "3.5"
+services:
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - "80:80"
+    container_name: nginx-proxy
+    
+
+  mongodb:
+    image: mongo
+    volumes:
+      - /home/wonkyung/db/mongodb/:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$PASSWORD
+    depends_on:
+      - nginx-proxy
+    container_name: mongodb
+    networks: 
+      - backend
+      - default
+
+
+  mongodb-express:
+    image: mongo-express
+    environment:
+      - VIRTUAL_HOST=admin.mongodb.wonkyunglee.io 
+      - VIRTUAL_PORT=8081 
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=$USERNAME
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=$PASSWORD 
+      - ME_CONFIG_BASICAUTH_USERNAME=$USERNAME
+      - ME_CONFIG_BASICAUTH_PASSWORD=$PASSWORD 
+    depends_on:
+      - mongodb
+      - nginx-proxy
+    links:
+      - mongodb:mongo
+    container_name: mongodb-express
+    networks: 
+      - backend
+      - default
+
+
+  notebook:
+    image: wonkyunglee/tensorflow:1.10.1-gpu-py3
+    working_dir: /data/
+    volumes:
+      - /home/wonkyung/wonkyung/:/data/ 
+    links:
+      - mongodb:mongo
+    depends_on:
+      - mongodb
+      - nginx-proxy
+    environment:
+      - VIRTUAL_HOST=nb.wonkyunglee.io
+      - VIRTUAL_PORT=8888 
+      - USERNAME=$USERNAME
+      - PASSWORD=$PASSWORD 
+    command: jupyter notebook --allow-root
+    container_name: notebook
+    networks: 
+      - backend
+      - default
+
+
+networks:
+  backend:
+    external: true
+    name: "backend"
+
+
