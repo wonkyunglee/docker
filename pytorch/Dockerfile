@@ -19,10 +19,10 @@ ENV LC_ALL=en_US.UTF-8
 RUN curl -fsSL https://dotfiles.wook.kr/etc/install | bash
 
 # Install python packages for image processing.
-RUN pip3 install scikit-image
-RUN pip3 install opencv-python
+RUN pip install scikit-image
+RUN pip install opencv-python
 RUN apt install -y libsm6 libxext6 libxrender-dev
-RUN pip3 install cmake
-RUN pip3 install dlib
+RUN pip install cmake
+RUN pip install dlib
 
 CMD ["zsh"]
