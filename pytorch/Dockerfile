@@ -24,5 +24,6 @@ RUN pip install opencv-python
 RUN apt install -y libsm6 libxext6 libxrender-dev
 RUN pip install cmake
 RUN pip install dlib
+RUN pip install jupyter
 
 CMD ["zsh"]
