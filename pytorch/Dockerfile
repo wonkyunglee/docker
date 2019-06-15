@@ -6,7 +6,8 @@ RUN apt-get install -y \
     git\
     vim \
     zsh \
-    tmux
+    tmux \
+    htop
 
 # Install language pack
 RUN apt-get install -y \
@@ -16,14 +17,16 @@ RUN update-locale
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
+RUN apt-get install -y libsm6 libxext6 libxrender-dev libglib2.0-0
 RUN curl -fsSL https://dotfiles.wook.kr/etc/install | bash
 
 # Install python packages for image processing.
 RUN pip install scikit-image
 RUN pip install opencv-python
-RUN apt install -y libsm6 libxext6 libxrender-dev
+
 RUN pip install cmake
 RUN pip install dlib
-RUN pip install jupyter
+RUN pip install jupyter easydict pprint tensorboardX tensorflow
+
 
 CMD ["zsh"]
