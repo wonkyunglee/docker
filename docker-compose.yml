@@ -7,69 +7,108 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     ports:
       - "80:80"
-    container_name: nginx-proxy
-    
 
-  mongodb:
-    image: mongo
-    volumes:
-      - /home/wonkyung/db/mongodb/:/data/db
+  whoami:
+    image: jwilder/whoami
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=$USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD=$PASSWORD
-    depends_on:
-      - nginx-proxy
-    container_name: mongodb
-    networks: 
-      - backend
-      - default
-
-
-  mongodb-express:
-    image: mongo-express
-    environment:
-      - VIRTUAL_HOST=admin.mongodb.wonkyunglee.io 
-      - VIRTUAL_PORT=8081 
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=$USERNAME
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=$PASSWORD 
-      - ME_CONFIG_BASICAUTH_USERNAME=$USERNAME
-      - ME_CONFIG_BASICAUTH_PASSWORD=$PASSWORD 
-    depends_on:
-      - mongodb
-      - nginx-proxy
-    links:
-      - mongodb:mongo
-    container_name: mongodb-express
-    networks: 
-      - backend
-      - default
-
+      - VIRTUAL_HOST:whoami.slvlab.wonkyunglee.io
 
   notebook:
-    image: wonkyunglee/tensorflow:1.10.1-gpu-py3
+    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
     working_dir: /data/
     volumes:
-      - /home/wonkyung/wonkyung/:/data/ 
-    links:
-      - mongodb:mongo
+      - /home/wonkyunglee/wonkyunglee/:/data/
     depends_on:
-      - mongodb
       - nginx-proxy
     environment:
-      - VIRTUAL_HOST=nb.wonkyunglee.io
-      - VIRTUAL_PORT=8888 
-      - USERNAME=$USERNAME
-      - PASSWORD=$PASSWORD 
-    command: jupyter notebook --allow-root
-    container_name: notebook
-    networks: 
-      - backend
-      - default
+      - VIRTUAL_HOST=nb.slvlab.wonkyunglee.io
+      - VIRTUAL_PORT=8889
+    expose:
+      - '8889'
+        #command: jupyter notebook --allow-root --ip="0.0.0.0" --port="8889" --no-browser --NotebookApp.password=sha1:e8c21621ebe5:7d457b354034529102e46e4413c6b64186191541
+    command: jupyter notebook --allow-root --ip="0.0.0.0" --port="8889" --no-browser --NotebookApp.password=sha1:06d8d8ac2968:3628d6951a612a9ee6c203e29f8baa8c12131dcc
 
 
-networks:
-  backend:
-    external: true
-    name: "backend"
+  tensorboard:
+    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
+    working_dir: /data/
+    volumes:
+      - /home/wonkyunglee/wonkyunglee/:/data/
+    depends_on:
+      - nginx-proxy
+    environment:
+      - VIRTUAL_HOST=tb.slvlab.wonkyunglee.io
+      - VIRTUAL_PORT=6006
+    expose:
+      - '6006'
+    #command: tensorboard --logdir researches/super_resolution_by_distillation/results/small_data/fsrcnn_student.base.lr1e-3_embedding/ --host='0.0.0.0' --port='6006'
+    command: tensorboard --logdir researches/super_resolution_by_distillation/results/  --host='0.0.0.0' --port='6006'
+
+
+  projector:
+    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
+    working_dir: /data/
+    volumes:
+      - /home/wonkyunglee/wonkyunglee/:/data/
+    depends_on:
+      - nginx-proxy
+    environment:
+      - VIRTUAL_HOST=pj.slvlab.wonkyunglee.io
+      - VIRTUAL_PORT=6008
+    expose:
+      - '6008'
+    command: tensorboard --logdir researches/super_resolution_by_distillation/results/diff_metric_learning/ --host='0.0.0.0' --port='6008'
+
+
+  tensorboard2:
+    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
+    working_dir: /data/
+    volumes:
+      - /home/wonkyunglee/wonkyunglee/:/data/
+    depends_on:
+      - nginx-proxy
+    environment:
+      - VIRTUAL_HOST=tb2.slvlab.wonkyunglee.io
+      - VIRTUAL_PORT=6007
+    expose:
+      - '6007'
+    command: tensorboard --logdir researches/semantic_correspondence/SFNet/results/ --host='0.0.0.0' --port='6007'
+
+
+
+  workspace:
+    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
+    working_dir: /data/
+    tty: true
+    stdin_open: true
+    ipc: "host"
+    volumes:
+      - /home/wonkyunglee/wonkyunglee/:/data/
+
+
+  #papergraph_server:
+  #  image: bricaud/gremlin-server-with-demo-graph
+  #  depends_on:
+  #    - nginx-proxy
+  #  ports:
+  #    - "8182:8182"
+
+
+  #papergraph_client:
+  #  image: joov/graphexp:0.1.1
+  #  build:
+  #    context: /home/wonkyunglee/wonkyunglee/papergraph/graphexp
+  #    args:
+  #      http_proxy: ${http_proxy}
+  #      https_proxy: ${https_proxy}
+  #      no_proxy: ${no_proxy}
+  #      #ports:
+  #      #  - "8183:80"
+  #  environment:
+  #    - VIRTUAL_HOST=papergraph.slvlab.wonkyunglee.io
+  #    - VIRTUAL_PORT=8183
+  #  depends_on:
+  #    - papergraph_server
+  #    - nginx-proxy
 
 
