@@ -2,3 +2,4 @@
 tensorflow_run_script.sh
 tensorboard_run_script.sh
 
+pytorch_from_nvidia/pytorch

@@ -14,10 +14,11 @@ services:
       - VIRTUAL_HOST:whoami.slvlab.wonkyunglee.io
 
   notebook:
-    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
+    image: wonkyunglee/pytorch:1.2.0-cuda10.0-cudnn7.6-runtime
     working_dir: /data/
     volumes:
       - /home/wonkyunglee/wonkyunglee/:/data/
+      - /dataset/:/dataset/
     depends_on:
       - nginx-proxy
     environment:
@@ -30,7 +31,7 @@ services:
 
 
   tensorboard:
-    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
+    image: wonkyunglee/pytorch:1.2.0-cuda10.0-cudnn7.6-runtime
     working_dir: /data/
     volumes:
       - /home/wonkyunglee/wonkyunglee/:/data/
@@ -42,48 +43,111 @@ services:
     expose:
       - '6006'
     #command: tensorboard --logdir researches/super_resolution_by_distillation/results/small_data/fsrcnn_student.base.lr1e-3_embedding/ --host='0.0.0.0' --port='6006'
-    command: tensorboard --logdir researches/super_resolution_by_distillation/results/  --host='0.0.0.0' --port='6006'
+    #command: tensorboard --logdir researches/super_resolution_by_distillation/results/  --host='0.0.0.0' --port='6006'
+    #command: tensorboard --logdir researches/super_resolution_team/super_resolution_research/results/wk_adaptive_fsrcnn/  --host='0.0.0.0' --port='6006'
+    #command: tensorboard --logdir researches/privileged_information_super_resolution/super_resolution_research/results/table10_joint_training/  --host='0.0.0.0' --port='6006'
+    #command: tensorboard --logdir researches/privileged_information_super_resolution/super_resolution_research/results/sr_results/  --host='0.0.0.0' --port='6006'
+    #command: tensorboard --logdir researches/privileged_information_super_resolution/super_resolution_research/results/table1_benchmark/  --host='0.0.0.0' --port='6006'
+    #command: tensorboard --logdir researches/privileged_information_super_resolution/super_resolution_research/results/table8_lambda/  --host='0.0.0.0' --port='6006'
+    command: tensorboard --logdir researches/privileged_information_super_resolution/super_resolution_research/results/wk_four_fsrcnn/  --host='0.0.0.0' --port='6006'
+    #command: tensorboard --logdir researches/manifold_learning_via_attention/poc/yolo/  --host='0.0.0.0' --port='6006'
 
 
-  projector:
-    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
-    working_dir: /data/
-    volumes:
-      - /home/wonkyunglee/wonkyunglee/:/data/
-    depends_on:
-      - nginx-proxy
-    environment:
-      - VIRTUAL_HOST=pj.slvlab.wonkyunglee.io
-      - VIRTUAL_PORT=6008
-    expose:
-      - '6008'
-    command: tensorboard --logdir researches/super_resolution_by_distillation/results/diff_metric_learning/ --host='0.0.0.0' --port='6008'
+  # projector:
+  #  image: wonkyunglee/pytorch:1.2.0-cuda10.0-cudnn7.6-runtime
+  #  working_dir: /data/
+  # volumes:
+  #    - /home/wonkyunglee/wonkyunglee/:/data/
+  #  depends_on:
+  #    - nginx-proxy
+  #  environment:
+  #    - VIRTUAL_HOST=pj.slvlab.wonkyunglee.io
+  #    - VIRTUAL_PORT=6008
+  #  expose:
+  #    - '6008'
+  #  command: tensorboard --logdir researches/super_resolution_by_distillation/results/diff_metric_learning/ --host='0.0.0.0' --port='6008'
 
 
-  tensorboard2:
-    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
-    working_dir: /data/
-    volumes:
-      - /home/wonkyunglee/wonkyunglee/:/data/
-    depends_on:
-      - nginx-proxy
-    environment:
-      - VIRTUAL_HOST=tb2.slvlab.wonkyunglee.io
-      - VIRTUAL_PORT=6007
-    expose:
-      - '6007'
-    command: tensorboard --logdir researches/semantic_correspondence/SFNet/results/ --host='0.0.0.0' --port='6007'
+  #tensorboard2:
+    #image: wonkyunglee/pytorch:1.2.0-cuda10.0-cudnn7.6-runtime
+    #working_dir: /data/
+    #volumes:
+    #  - /home/wonkyunglee/wonkyunglee/:/data/
+    #depends_on:
+    #  - nginx-proxy
+    #environment:
+    #  - VIRTUAL_HOST=tb2.slvlab.wonkyunglee.io
+    #  - VIRTUAL_PORT=6007
+    #expose:
+    #  - '6007'
+    #command: tensorboard --logdir researches/semantic_correspondence/SFNet/results/ --host='0.0.0.0' --port='6007'
+    #command: tensorboard --logdir researches/super_resolution_team/super_resolution_research/results/wk_orifsrcnn/  --host='0.0.0.0' --port='6007'
+    #command: tensorboard --logdir researches/privileged_information_super_resolution/super_resolution_research/results/wk_fsrcnn/  --host='0.0.0.0' --port='6007'
 
 
 
   workspace:
-    image: wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime
+    image: wonkyunglee/pytorch:1.2.0-cuda10.0-cudnn7.6-runtime
     working_dir: /data/
     tty: true
     stdin_open: true
     ipc: "host"
     volumes:
       - /home/wonkyunglee/wonkyunglee/:/data/
+
+
+  sr_demo:
+    image: wonkyunglee/pytorch:1.2.0-cuda10.0-cudnn7.6-runtime
+    working_dir: /data/researches/privileged_information_super_resolution/super_resolution_research/demo/
+    tty: true
+    stdin_open: true
+    ipc: "host"
+    ports:
+      - "20000:20000"
+    volumes:
+      - /home/wonkyunglee/wonkyunglee/:/data/
+
+
+
+  workspace2:
+    image: wonkyunglee/pytorch:1.4-cuda10.1-cudnn7-runtime
+    working_dir: /data/
+    tty: true
+    stdin_open: true
+    ipc: "host"
+    volumes:
+      - /home/wonkyunglee/wonkyunglee/:/data/
+      - /dataset/:/dataset/
+
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=leewk92
+      - MONGO_INITDB_ROOT_PASSWORD=leewk92
+      - MONGO_INITDB_DATABASE=project
+    volumes:
+      - /home/wonkyunglee/wonkyunglee/db/mongodb:/data/db
+
+
+  mongo-express:
+    image: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=leewk92
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=leewk92
+      - ME_CONFIG_BASICAUTH_USERNAME=leewk92
+      - ME_CONFIG_BASICAUTH_PASSWORD=leewk92
+      - VIRTUAL_HOST=db.slvlab.wonkyunglee.io
+      - VIRTUAL_PORT=8081
+    depends_on:
+      - mongo
+    links:
+      - mongo
 
 
   #papergraph_server:

@@ -1,1 +1,1 @@
-docker build -t wonkyunglee/pytorch:1.1.0-cuda10.0-cudnn7.5-runtime .
+docker build -t wonkyunglee/pytorch:1.4-cuda10.1-cudnn7-runtime .
