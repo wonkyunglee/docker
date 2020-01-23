@@ -1,5 +1,6 @@
 #FROM pytorch/pytorch:1.4-cuda10.1-cudnn7-runtime
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu16.04
+#FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 MAINTAINER Wonkyung Lee <leewk921223@gmail.com>
 
 RUN apt-get update
